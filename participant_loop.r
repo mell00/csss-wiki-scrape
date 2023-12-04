@@ -6,14 +6,10 @@ source("participants.r")
 source("baselink_filter.r")
 source("abs_url.r")
 
-# Assuming you have a DataFrame named 'links_df' with a column 'links_urls' containing URLs
-# links_df <- data.frame(links_urls = c("url1", "url2", ...))
-
-# Use sapply or lapply to apply the function to each URL and compile the results
 participants_links <- sapply(links_df$URLs, scrape_participants, USE.NAMES = FALSE)
 participants_links <- sapply(participants_links, make_absolute_url)
 
-# The result is a vector of "Participants" links
+# vector of "Participants" links
 names(participants_links) = NULL
 print(participants_links)
 
@@ -72,11 +68,11 @@ scrape_participants_info_2 <- function(html_content) {
   data <- data.frame(Year = years, Name = names, Link = abs_links, stringsAsFactors = FALSE)
   
   
-  # Exclude entries where Name is actually a link or Link does not contain 'santafe.edu'
+  # Exclude entries where Name is a url or Link does not contain 'santafe.edu'
   valid_entries <- !grepl("http", data$Name, ignore.case = TRUE) & grepl("santafe.edu", data$Link, ignore.case = TRUE)
   data <- data[valid_entries, ]
   
-  # Remove non-alphanumeric characters from all names
+  # Remove non-alphanumeric characters from names
   data$Name <- gsub("[^[:alnum:] ]", "", data$Name)
   
   # Reset row indices
@@ -101,7 +97,7 @@ run_pt_scrape <- function(url) {
     NULL
   })
   
-  # Check if result is NULL, indicating an error occurred in scrape_names_1
+  # Check if result is NULL, when an error occurred in scrape_names_1
   if (is.null(result) || length(result[[1]]) < 6) {
     # Run the second scraping function if the first one failed
     result <- scrape_participants_info_2(url)
