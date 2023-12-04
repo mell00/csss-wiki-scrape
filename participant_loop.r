@@ -87,25 +87,41 @@ scrape_participants_info_2 <- function(html_content) {
 
 scrape_names_1(participants_links[4])
 
-scrape_participants_info_2(participants_links[15])
+scrape_participants_info_2(participants_links[22])
 
 #-------------------------------------------------------------------------------------------
 
 # Checking for links
 run_pt_scrape <- function(url) {
+  # Attempt to run the first scraping function
+  result <- tryCatch({
+    scrape_names_1(url)
+  }, error = function(e) {
+    # In case of an error, return NULL to signal a need for the second function
+    NULL
+  })
   
-  result <- try(scrape_names_1(url))
-  
-  if (class(result) == "try-error") {
+  # Check if result is NULL, indicating an error occurred in scrape_names_1
+  if (is.null(result) || length(result[[1]]) < 6) {
+    # Run the second scraping function if the first one failed
     result <- scrape_participants_info_2(url)
   }
   
   return(result)
 }
 
+
 result <- run_pt_scrape(participants_links[11])
+
+length(result[[1]])
+
+scrape_results <- lapply(participants_links, run_pt_scrape)
+
+combined_results <- do.call(rbind, scrape_results)
+
 
 
 #-------------------------------------------------------------------------------------------
+
 
 
