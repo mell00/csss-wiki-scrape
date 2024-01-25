@@ -3,7 +3,6 @@ source("cssweblinks.r")
 
 participants_links <- sapply(csss_web_links, project_scraper, USE.NAMES = FALSE)
 
-# Install and load necessary packages
 install.packages("dplyr")
 library(dplyr)
 
@@ -19,13 +18,13 @@ bind_dataframes <- function(dataframes_list) {
   return(final_dataframe)
 }
 
-# Example usage:
 
-# Call the function to bind the data frames
+
+
 data <- bind_dataframes(participants_links)
 
 
-# Install and load necessary packages
+
 install.packages("tidyr")
 library(tidyr)
 
@@ -46,5 +45,7 @@ wide_data[is.na(wide_data)] <- ""
 
 # Print the restructured data frame
 print(wide_data)
+
+write.csv(wide_data, "output.csv", row.names = FALSE)
 
 write.csv(wide_data, "output.csv", row.names = FALSE)
