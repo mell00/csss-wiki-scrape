@@ -40,14 +40,12 @@ print(projects_data)
 
 #---------------------------------------------------------------------
 
-# Install and load necessary packages
 install.packages("rvest")
 install.packages("dplyr")
 install.packages("purrr")
 library(rvest)
 library(dplyr)
 library(purrr)
-
 
 project_scraper <- function(url){
   
@@ -62,7 +60,7 @@ project_scraper <- function(url){
     html_nodes("div.collapsible-item-heading") %>% 
     html_text(trim = TRUE)
   
-  # Create a list to store project data
+  # Create a list to store project data frames
   projects_list <- list()
   
   # Loop through each table and extract names and institutions
@@ -74,14 +72,22 @@ project_scraper <- function(url){
       return(data.frame(Name = name, Institution = institution))
     })
     
-    # Combine data for each project and add to the list
-    projects_list[[project_titles[i]]] <- bind_rows(project_info)
+    # Combine data for each project into one data frame
+    project_data <- bind_rows(project_info)
+    
+    # Add a "ProjectName" column to the data frame
+    project_data$ProjectName <- project_titles[i]
+    
+    # Append the data frame to the list
+    projects_list[[i]] <- project_data
   }
   
-  # Print the project list with names and institutions grouped by project
-  return(projects_list)
+  # Concatenate all project data frames into one
+  final_dataframe <- do.call(rbind, projects_list)
+  )
+  write.csv(final_dataframe, "output.csv", row.names = FALSE)
+  
+  return(final_dataframe)
 }
-
-
 
 
