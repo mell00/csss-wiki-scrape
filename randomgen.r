@@ -28,4 +28,3 @@ write.csv(data, "output_file.csv", row.names = FALSE)
 
 # View the data with IDs
 data
-
